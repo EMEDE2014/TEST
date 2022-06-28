@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    {{ partial "header" . }}
+  </head>
+  <body id="icons-body">
+    {{ partialCached "skippy" . }}
+    {{ partial "navbar" . }}
+
+    <main class="container icon-examples" id="content" role="main">
+      <nav>
+        <ul class="breadcrumb my-4 text-muted bg-transparent p-0">
+          <li class="breadcrumb-item"><a href="/">Icons</a></li>
+          <li class="breadcrumb-item">{{ .Title }}</li>
+        </ul>
+      </nav>
+
+      <div class="row align-items-md-center">
+        <div class="col-md-6 col-lg-8">
+          <h1>{{ .Title }}</h1>
+          <p class="mb-3 mb-md-0"><strong>Tags:</strong> {{ with .Params.tags }}{{ delimit . ", " }}{{ end }}</p>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          {{ partialCached "ads" . }}
+        </div>
+      </div>
+
+      <hr class="my-4">
+
+      {{- $filenameWithExt := split .Name "." -}}
+      {{- $filename := index $filenameWithExt 0 -}}
+      {{- $name := humanize $filename -}}
+      {{- $svgPath := printf "/icons/%s.svg" .File.TranslationBaseName -}}
+      {{- $svgHtml := readFile $svgPath | chomp | safeHTML -}}
+
+      <div class="row gx-lg-5">
+        <div class="col-lg-8 mb-4">
+          <div class="icon-demo mb-4 border rounded-3 d-flex align-items-center justify-content-center p-3 py-6" style="font-size: 10em">
+            {{ $svgHtml }}
+          </div>
+
+          <h2>Examples</h2>
+          <div class="p-3 border rounded-3">
+            <div class="fs-3 mb-3">
+              {{ $svgHtml }}
+              Heading
+            </div>
+            <p>
+              Inline text {{ $svgHtml }}
+            </p>
+            <p>
+              <a href="#" title="Placeholder link title" class="text-decoration-none">
+                Example link text
+                {{ $svgHtml }}
+              </a>
+            </p>
+            <p>
+              <button type="button" class="btn btn-primary">
+                {{ $svgHtml }}
+                Button
+              </button>
+              <button type="button" class="btn btn-outline-success">
+                {{ $svgHtml }}
+                Button
+              </button>
+              <button type="button" class="btn btn-outline-danger">
+                {{ $svgHtml }}
+                Button
+              </button>
+            </p>
+            <p class="mb-0">
+              <button type="button" class="btn btn-secondary">
+                {{ $svgHtml }}
+                <span class="visually-hidden">Button</span>
+              </button>
+            </p>
+          </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+          <h2 class="fs-3">Download</h2>
+          <p>Download the SVG to use or edit.</p>
+          <a href="{{ $svgPath }}" class="btn btn-bd-primary mb-4" download>Download SVG</a>
+
+          <h2 class="fs-3">Icon font</h2>
+          <p>Using the web font? Copy, paste, and go.</p>
+
+          <div class="mb-4">
+            {{ $iconFontSnippet := printf `<i class="bi bi-%s"></i>` .File.TranslationBaseName -}}
+            {{- highlight $iconFontSnippet "html" "" }}
+          </div>
+
+          <h2 class="fs-3">Copy HTML</h2>
+          <p>Paste the SVG right into your project's code.</p>
+
+          <div id="copy-error-callout" class="alert alert-info d-none" role="alert"></div>
+
+          {{ highlight $svgHtml "html" "" }}
+        </div>
+      </div>
+    </main>
+
+    {{- partialCached "footer" . }}
+    {{- partialCached "scripts" . .IsHome }}
+  </body>
+</html>
